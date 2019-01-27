@@ -17,8 +17,8 @@ namespace Matrix_n_Threads
             {
                 throw new Exception("No Equal Sizes");
             }
-            int height = sizes.Item1 == MatrixEqualSize.Width ? firstMatrix[0].Count : firstMatrix.Count;
-            int width = sizes.Item2 == MatrixEqualSize.Width ? secondMatrix[0].Count : secondMatrix.Count;
+            int height = sizes.Item1 == MatrixEqualSize.Height ? firstMatrix[0].Count : firstMatrix.Count;
+            int width = sizes.Item2 == MatrixEqualSize.Height ? secondMatrix[0].Count : secondMatrix.Count;
 
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
             _innerMatrix = new List<List<int>>(height);
@@ -27,6 +27,7 @@ namespace Matrix_n_Threads
                 _innerMatrix.Add(new List<int>(width));
                 for(int j = 0; j < width; j++)
                 {
+                    _innerMatrix[i].Add(0);
                     var firstLine = TakeLine(firstMatrix, sizes.Item1, i).ToList();
                     var secondLine = TakeLine(secondMatrix, sizes.Item2, j).ToList();
                     var arc = new Tuple<List<int>, List<int>, int, int>(firstLine, secondLine, i, j);
@@ -55,7 +56,7 @@ namespace Matrix_n_Threads
 
         private IEnumerable<int> TakeLine(List<List<int>> matrix, MatrixEqualSize side, int lineNumber)
         {
-            int lineLength = side == MatrixEqualSize.Height ? matrix[0].Count : matrix.Count;
+            int lineLength = side == MatrixEqualSize.Height ? matrix.Count : matrix[0].Count;
             for (int i = 0; i < lineLength; i++)
             {
                 yield return side == MatrixEqualSize.Height ? matrix[i][lineNumber] : matrix[lineNumber][i];
