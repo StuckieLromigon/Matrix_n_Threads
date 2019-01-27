@@ -8,10 +8,8 @@ namespace Matrix_n_Threads
 {
     enum MatrixEqualSize
     {
-        HeightHeight,
-        HeightWidth,
-        WidthHeight,
-        WidthWidth,
+        Height,
+        Width,
         NoEquals
     }
 }
