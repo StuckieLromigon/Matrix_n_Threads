@@ -9,10 +9,15 @@ namespace Matrix_n_Threads
 {
     class MatrixMultiplierParallel : AbstractMatrixMultiplier
     {
-        private List<List<Tuple<List<int>, List<int>>>> _notCalculatedLines { get; set; }
+        private Tuple<MatrixEqualSize, MatrixEqualSize> sizes;
+        private List<List<int>> _firstMatrix;
+        private List<List<int>> _secondMatrix;
+        private List<List<Tuple<int, int>>> _coords;
         public List<List<int>> MatrixMultiply(List<List<int>> firstMatrix, List<List<int>> secondMatrix)
         {
-            var sizes = MatrixEqualsSize(firstMatrix, secondMatrix);
+            _firstMatrix = firstMatrix;
+            _secondMatrix = secondMatrix;
+            sizes = MatrixEqualsSize(firstMatrix, secondMatrix);
             if (sizes.Item1 == MatrixEqualSize.NoEquals)
             {
                 throw new Exception("No Equal Sizes");
@@ -21,25 +26,27 @@ namespace Matrix_n_Threads
             int width = sizes.Item2 == MatrixEqualSize.Height ? secondMatrix[0].Count : secondMatrix.Count;
 
             _innerMatrix = new List<List<int>>();
-            _notCalculatedLines = new List<List<Tuple<List<int>, List<int>>>>();
+            _coords = new List<List<Tuple<int, int>>>();
             for (int i = 0; i < height; i++)
             {
                 _innerMatrix.Add(new List<int>());
-                _notCalculatedLines.Add(new List<Tuple<List<int>, List<int>>>());
+                _coords.Add(new List<Tuple<int, int>>());
                 for (int j = 0; j < width; j++)
                 {
                     _innerMatrix[i].Add(0);
                     var firstLine = TakeLine(firstMatrix, sizes.Item1, i).ToList();
                     var secondLine = TakeLine(secondMatrix, sizes.Item2, j).ToList();
-                    _notCalculatedLines[i].Add(new Tuple<List<int>, List<int>>(firstLine, secondLine));
+                    _coords[i].Add(new Tuple<int, int>(i,j));
                 }
-                Parallel.For(0, width, MultiplyLines(,i);
+                Parallel.ForEach<Tuple<int, int>>(_coords[i], MultiplyLines);
             }
             return _innerMatrix;
         }
 
-        private void MultiplyLines(int x, int y)
+        private void MultiplyLines(Tuple<int, int> arcCoords)
         {
+            var firstLine = TakeLine(_firstMatrix, sizes.Item1, arcCoords.Item1).ToList();
+            var secondLine = TakeLine(_secondMatrix, sizes.Item2, arcCoords.Item2).ToList();
             if (firstLine.Count != secondLine.Count)
             {
                 throw new Exception("Wrong Lines");
@@ -50,7 +57,7 @@ namespace Matrix_n_Threads
                 sum += firstLine[i] * secondLine[i];
             }
 
-            return sum;
+            _innerMatrix[arcCoords.Item1][arcCoords.Item2] = sum;
         }
     }
 }
