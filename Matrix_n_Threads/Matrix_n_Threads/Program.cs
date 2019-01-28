@@ -17,7 +17,7 @@ namespace Matrix_n_Threads
                 new List<int> {1, 2, 3},
                 new List<int> {4, 5, 6},
                 new List<int> {7, 8, 9}};
-            var sum = new MatrixMultiplierParallel().MatrixMultiply(firstMatrix, secondMatrix);
+            var sum = new MatrixMultiplierTask().MatrixMultiply(firstMatrix, secondMatrix);
             foreach(var line in sum)
             {
                 foreach(var el in line)

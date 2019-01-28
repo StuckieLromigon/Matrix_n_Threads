@@ -46,6 +46,7 @@
     <Compile Include="AbstractMatrixMultiplier.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="MatrixMultiplierParallel.cs" />
+    <Compile Include="MatrixMultiplierTask.cs" />
     <Compile Include="MatrixMultiplierThreads.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
